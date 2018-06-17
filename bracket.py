@@ -5,9 +5,9 @@ import re
 
 def replace_line(pat,text,lines):
     for l in range(len(lines)):
-        m = re.search(pat,lines[l])
+        m = re.sub(pat,text,lines[l])
         if m:
-            lines[l] = m.group(1) + text + m.group(2)
+            lines[l] = m
     
 
 def print_table(sheet,dat):
@@ -15,54 +15,40 @@ def print_table(sheet,dat):
     ls = temp_file.readlines()
     lines = []
     for l in ls:
-        m = re.search('(.*?){Name}(.*)',l)
+        m = re.sub('{Name}',sheet,l)
         if m:
-            lines.append(m.group(1) + sheet + m.group(2))
+            lines.append(m)
         else:
             lines.append(l)
 
     #groups
     for x in range(8):
-        pat = '(.*?){G' + str(x) + '0}(.*)'
-        replace_line(pat,dat['GRP'][x][0],lines)
-
-        pat = '(.*?){G' + str(x) + '1}(.*)'
-        replace_line(pat,dat['GRP'][x][1],lines)
-
-        pat = '(.*?){G' + str(x) + '2}(.*)'
-        replace_line(pat,dat['GRP'][x][2],lines)
-
-        pat = '(.*?){G' + str(x) + '3}(.*)'
-        replace_line(pat,dat['GRP'][x][3],lines)
-        
+        for y in range(4):            
+            pat = '{G' + str(x) + str(y) + '}'
+            replace_line(pat,dat['GRP'][x][y],lines)
+            
     #teens
     for x in range(8):
-        pat = '(.*?){T' + str(x) + '0}(.*)'
-        replace_line(pat,dat['STN'][x][0],lines)
-
-        pat = '(.*?){T' + str(x) + '1}(.*)'
-        replace_line(pat,dat['STN'][x][1],lines)
+        for y in range(2):
+            pat = '{T' + str(x) + str(y) + '}'
+            replace_line(pat,dat['STN'][x][y],lines)
         
     #QFs
     for x in range(4):
-        pat = '(.*?){Q' + str(x) + '0}(.*)'
-        replace_line(pat,dat['QFS'][x][0],lines)
-
-        pat = '(.*?){Q' + str(x) + '1}(.*)'
-        replace_line(pat,dat['QFS'][x][1],lines)
+        for y in range(2):
+            pat = '{Q' + str(x) + str(y) + '}'
+            replace_line(pat,dat['QFS'][x][y],lines)
 
     #SFs
     for x in range(2):
-        pat = '(.*?){S' + str(x) + '0}(.*)'
-        replace_line(pat,dat['SFS'][x][0],lines)
-
-        pat = '(.*?){S' + str(x) + '1}(.*)'
-        replace_line(pat,dat['SFS'][x][1],lines)
+        for y in range(2):
+            pat = '{S' + str(x) + str(y) + '}'
+            replace_line(pat,dat['SFS'][x][y],lines)
         
     #Fs
-    pat = '(.*?){F00}(.*)'
+    pat = '{F00}'
     replace_line(pat,dat['F'][0],lines) 
-    pat = '(.*?){F11}(.*)'   
+    pat = '{F01}'   
     replace_line(pat,dat['F'][1],lines)
     
     for l in lines:
