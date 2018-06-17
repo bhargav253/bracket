@@ -1,4 +1,5 @@
 #!/usr/bin/python2.7
+# -*- coding: utf-8 -*-
 
 import pandas as pd
 import re
@@ -144,20 +145,48 @@ def xtract_sheet(sheet):
     return dat
 
 
-if __name__ == '__main__':
-    
-    xx = pd.ExcelFile("brack.xlsx")
+def print_header():
+    print '__NOTOC__\n'\
+        '===Bracket Challenge===\n'\
+        'Welcome to Cavium’s World Cup Bracket Challenge!\n'\
+        '<br>We have 24 people who signed up with the fee, so the prizes are going to be:\n'\
+        '*1st place: $120\n'\
+        '*2nd place: $60\n'\
+        '*3rd place: $40\n'\
+        '*last place: $20\n\n'\
+        'Good Luck with your brackets and Enjoy World Cup!!! J\n\n'\
+        '===Scoring===\n'\
+        'Group Stage Scoring\n'\
+        '*Correctly predict a Group winner: 10 points\n'\
+        '*Correctly predict a Group Runner-Up: 10 points\n'\
+        '*Correctly predict the top two teams (in any order): 3 points\n'\
+        '*Correctly predict the entire group in the correct order: 15 points\n\n'\
+        'Knockout Stage Scoring\n'\
+        '*For each correct team in the Quarter-Finals: 3 points\n'\
+        '*For each correct team in the Semi-Finals: 4 points\n'\
+        '*For each correct team in the Final: 5 points\n'\
+        '*For the correct World Cup 2018 Winner: 10 points\n'\
+        '*For the correct World Cup 2018 Runner-up: 8 points\n'\
+        '*Correctly predict a fixture (both correct teams and the correct position in the bracket): 10 points\n\n'\
+        '===Scoring Table===\n'\
+        '{| class="wikitable sortable" style="text-align:left; border: 1px solid darkgray;"\n'\
+        '! Name\n'\
+        '! Score\n'\
+        '|-\n'
 
-    print '===Scoring Table==='
-    print '{| class="wikitable sortable" style="text-align:left; border: 1px solid darkgray;"'
-    print '! Name'
-    print '! Score'
-    print '|-'
     for sheet in xx.sheet_names:        
         print '| [[2018FIFA#' + sheet + ' | ' + sheet + ']] || 0'
         print '|-'
     print '|}'
         
+    
+
+if __name__ == '__main__':
+    
+    xx = pd.ExcelFile("brack.xlsx")
+
+    print_header()
+    
     for sheet in xx.sheet_names:
         sh = xx.parse(sheet)
         dat = xtract_sheet(sh)
