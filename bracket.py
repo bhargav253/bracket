@@ -3,7 +3,10 @@
 import pandas as pd
 import re
 
-def replace_line(pat,text,lines):
+def replace_line(pat,text,lines,color):
+    if color:
+        text = 'style="color:green"|' + text
+
     for l in range(len(lines)):
         m = re.sub(pat,text,lines[l])
         if m:
@@ -25,31 +28,43 @@ def print_table(sheet,dat):
     for x in range(8):
         for y in range(4):            
             pat = '{G' + str(x) + str(y) + '}'
-            replace_line(pat,dat['GRP'][x][y],lines)
+            replace_line(pat,dat['GRP'][x][y],lines,False)
             
     #teens
     for x in range(8):
         for y in range(2):
             pat = '{T' + str(x) + str(y) + '}'
-            replace_line(pat,dat['STN'][x][y],lines)
+            if dat['STN'][x][y] == dat['QFS'][x/2][x%2]:
+                color = True
+            else:
+                color = False                
+            replace_line(pat,dat['STN'][x][y],lines,color)
         
     #QFs
     for x in range(4):
         for y in range(2):
             pat = '{Q' + str(x) + str(y) + '}'
-            replace_line(pat,dat['QFS'][x][y],lines)
+            if dat['QFS'][x][y] == dat['SFS'][x/2][x%2]:
+                color = True
+            else:
+                color = False                
+            replace_line(pat,dat['QFS'][x][y],lines,color)
 
     #SFs
     for x in range(2):
         for y in range(2):
             pat = '{S' + str(x) + str(y) + '}'
-            replace_line(pat,dat['SFS'][x][y],lines)
+            if dat['SFS'][x][y] == dat['F'][x]:
+                color = True
+            else:
+                color = False
+            replace_line(pat,dat['SFS'][x][y],lines,color)
         
     #Fs
     pat = '{F00}'
-    replace_line(pat,dat['F'][0],lines) 
+    replace_line(pat,dat['F'][0],lines,(dat['F'][0]==dat['W'])) 
     pat = '{F01}'   
-    replace_line(pat,dat['F'][1],lines)
+    replace_line(pat,dat['F'][1],lines,(dat['F'][1]==dat['W']))
     
     for l in lines:
         print l
