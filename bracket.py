@@ -4,6 +4,31 @@
 import pandas as pd
 import re
 
+def group_chk(dat,x):
+    score = 0
+    #winner check
+    if dat[x][0] == winner['GRP'][x][0]:
+        score = score + 10
+    if dat[x][1] == winner['GRP'][x][1]:
+        score = score + 10
+
+    top_two = ((dat[x][0] == winner['GRP'][x][0]) & (dat[x][1] == winner['GRP'][x][1])) | \
+              ((dat[x][0] == winner['GRP'][x][1])  & (dat[x][1] == winner['GRP'][x][0]))              
+
+    if top_two:
+        score = score + 3
+
+    order = 1    
+    for y in range(4):
+        if dat[x][y] != winner['GRP'][x][y]:        
+            order = order & 0
+
+    if order:
+        score = score + 15
+
+    return score
+        
+
 def replace_line(pat,text,lines,color):
     if color:
         text = 'style="color:green"|' + text
@@ -12,66 +37,7 @@ def replace_line(pat,text,lines,color):
         m = re.sub(pat,text,lines[l])
         if m:
             lines[l] = m
-    
 
-def print_table(sheet,dat):
-    temp_file = open('template','r')
-    ls = temp_file.readlines()
-    lines = []
-    for l in ls:
-        m = re.sub('{Name}',sheet,l)
-        if m:
-            lines.append(m)
-        else:
-            lines.append(l)
-
-    #groups
-    for x in range(8):
-        for y in range(4):            
-            pat = '{G' + str(x) + str(y) + '}'
-            replace_line(pat,dat['GRP'][x][y],lines,False)
-            
-    #teens
-    for x in range(8):
-        for y in range(2):
-            pat = '{T' + str(x) + str(y) + '}'
-            if dat['STN'][x][y] == dat['QFS'][x/2][x%2]:
-                color = True
-            else:
-                color = False                
-            replace_line(pat,dat['STN'][x][y],lines,color)
-        
-    #QFs
-    for x in range(4):
-        for y in range(2):
-            pat = '{Q' + str(x) + str(y) + '}'
-            if dat['QFS'][x][y] == dat['SFS'][x/2][x%2]:
-                color = True
-            else:
-                color = False                
-            replace_line(pat,dat['QFS'][x][y],lines,color)
-
-    #SFs
-    for x in range(2):
-        for y in range(2):
-            pat = '{S' + str(x) + str(y) + '}'
-            if dat['SFS'][x][y] == dat['F'][x]:
-                color = True
-            else:
-                color = False
-            replace_line(pat,dat['SFS'][x][y],lines,color)
-        
-    #Fs
-    pat = '{F00}'
-    replace_line(pat,dat['F'][0],lines,(dat['F'][0]==dat['W'])) 
-    pat = '{F01}'   
-    replace_line(pat,dat['F'][1],lines,(dat['F'][1]==dat['W']))
-    
-    for l in lines:
-        print l
-
-    temp_file.close()
-        
 def xtract_sheet(sheet):
     g = []
     t = []
@@ -133,6 +99,11 @@ def xtract_sheet(sheet):
 
     w = sheet.iloc[13][14]
 
+    if f[0] == w:
+        r = f[1]
+    else:
+        r = f[0]
+    
     #print w
 
     dat = { 'GRP' : g,
@@ -140,11 +111,171 @@ def xtract_sheet(sheet):
             'QFS' : q,
             'SFS' : s,
             'F'   : f,
-            'W'   : w}
+            'W'   : w,
+            'R'   : r }
 
     return dat
 
 
+def load_lines(sheet):
+    temp_file = open('template','r')
+    ls = temp_file.readlines()
+    lines = []
+    for l in ls:
+        m = re.sub('{Name}',sheet,l)
+        if m:
+            lines.append(m)
+        else:
+            lines.append(l)
+
+    temp_file.close()
+            
+    return lines
+
+def make_table(lines,dat):
+    #groups
+    for x in range(8):
+        for y in range(4):            
+            pat = '{G' + str(x) + str(y) + '}'
+            replace_line(pat,dat['GRP'][x][y],lines,False)
+            
+    #teens
+    for x in range(8):
+        for y in range(2):
+            pat = '{T' + str(x) + str(y) + '}'
+            if dat['STN'][x][y] == dat['QFS'][x/2][x%2]:
+                color = True
+            else:
+                color = False                
+            replace_line(pat,dat['STN'][x][y],lines,color)
+        
+    #QFs
+    for x in range(4):
+        for y in range(2):
+            pat = '{Q' + str(x) + str(y) + '}'
+            if dat['QFS'][x][y] == dat['SFS'][x/2][x%2]:
+                color = True
+            else:
+                color = False                
+            replace_line(pat,dat['QFS'][x][y],lines,color)
+
+    #SFs
+    for x in range(2):
+        for y in range(2):
+            pat = '{S' + str(x) + str(y) + '}'
+            if dat['SFS'][x][y] == dat['F'][x]:
+                color = True
+            else:
+                color = False
+            replace_line(pat,dat['SFS'][x][y],lines,color)
+        
+    #Fs
+    pat = '{F00}'
+    replace_line(pat,dat['F'][0],lines,(dat['F'][0]==dat['W'])) 
+    pat = '{F01}'   
+    replace_line(pat,dat['F'][1],lines,(dat['F'][1]==dat['W']))
+
+
+def evaluate_score(lines,dat):
+    tot_score = 0
+
+    #groups
+    for x in range(8):
+        score = group_chk(dat['GRP'],x)
+        pat = '{GP' + str(x) + '}'
+        replace_line(pat,str(score),lines,False)
+        tot_score = tot_score + score
+
+    #teens brackets
+    for x in range(8):
+        brack = (dat['STN'][x][0] == winner['STN'][x][0]) & \
+                (dat['STN'][x][1] == winner['STN'][x][1])
+        if brack:
+            score = 10
+        else:
+            score = 0
+
+        pat = '{TP' + str(x) + '}'
+        replace_line(pat,str(score),lines,False)
+        tot_score = tot_score + score        
+
+    #QFs
+    c_list = []
+    w_list = []
+    for x in range(4):
+        c_list.append(dat['QFS'][x][0])
+        c_list.append(dat['QFS'][x][1])        
+        w_list.append(winner['QFS'][x][0])
+        w_list.append(winner['QFS'][x][1])        
+
+        brack = (dat['QFS'][x][0] == winner['QFS'][x][0]) & \
+                (dat['QFS'][x][1] == winner['QFS'][x][1])
+        if brack:
+            score = 10
+        else:
+            score = 0
+
+        pat = '{QP' + str(x) + '}'
+        replace_line(pat,str(score),lines,False)
+        tot_score = tot_score + score        
+
+    score = 3 * len(list(set(c_list).intersection(w_list)))
+    pat = '{QPF}'
+    replace_line(pat,str(score),lines,False)
+    tot_score = tot_score + score    
+        
+        
+    #SFs
+    c_list = []
+    w_list = []
+    for x in range(2):
+        c_list.append(dat['SFS'][x][0])
+        c_list.append(dat['SFS'][x][1])        
+        w_list.append(winner['SFS'][x][0])
+        w_list.append(winner['SFS'][x][1])        
+
+        brack = (dat['SFS'][x][0] == winner['SFS'][x][0]) & \
+                (dat['SFS'][x][1] == winner['SFS'][x][1])
+        if brack:
+            score = 10
+        else:
+            score = 0
+
+        pat = '{SP' + str(x) + '}'
+        replace_line(pat,str(score),lines,False)
+        tot_score = tot_score + score        
+
+    score = 4 * len(list(set(c_list).intersection(w_list)))
+    pat = '{SPF}'
+    replace_line(pat,str(score),lines,False)
+    tot_score = tot_score + score    
+        
+
+    #final bracket
+    brack = (dat['F'][0] == winner['F'][0]) & \
+            (dat['F'][1] == winner['F'][1])
+    if brack:
+        score = 10
+    else:
+        score = 0
+
+    pat = '{FP0}'
+    replace_line(pat,str(score),lines,False)
+    tot_score = tot_score + score    
+    
+    score = 5 * len(list(set(dat['F']).intersection(winner['F'])))
+    if dat['W'] == winner['W']:
+        score = score + 10
+    elif dat['R'] == winner['R']:
+        score = score + 8
+    
+    pat = '{FPF}'
+    replace_line(pat,str(score),lines,False)
+    tot_score = tot_score + score    
+
+    return tot_score
+
+    
 def print_header():
     print '__NOTOC__\n'\
         '===Bracket Challenge===\n'\
@@ -174,20 +305,43 @@ def print_header():
         '! Score\n'\
         '|-\n'
 
-    for sheet in xx.sheet_names:        
-        print '| [[2018FIFA#' + sheet + ' | ' + sheet + ']] || 0'
+    for key in sheet_score:        
+        print '| [[2018FIFA#' + key + ' | ' + key + ']] || ' + str(sheet_score[key])
         print '|-'
     print '|}'
         
-    
+
+def add_lines(lines):
+
+    for l in lines:
+        _out.append(l)
+               
 
 if __name__ == '__main__':
     
     xx = pd.ExcelFile("brack.xlsx")
 
-    print_header()
+    global winner
+    global _out
+    global sheet_score    
+
+    sheet_score = {}
+    _out = []
     
     for sheet in xx.sheet_names:
-        sh = xx.parse(sheet)
-        dat = xtract_sheet(sh)
-        print_table(sheet,dat)
+        if sheet == 'winner':
+            sh = xx.parse(sheet)
+            winner = xtract_sheet(sh)
+        else:
+            sh = xx.parse(sheet)
+            dat = xtract_sheet(sh)
+            lines = load_lines(sheet)
+            make_table(lines,dat)
+            sheet_score[sheet] = evaluate_score(lines,dat)
+            add_lines(lines)
+
+    print_header()            
+
+    for l in _out:
+        print l
+    
