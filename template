@@ -1,87 +1,128 @@
 ==={Name}===
-{| class = "wikitable"
-| align="center" style="background:#f0f0f0;" colspan="3"|'''Group Stage'''
-| align="center" style="background:#f0f0f0;" colspan="2"|'''Round 16'''
-| align="center" style="background:#f0f0f0;" colspan="2"|'''Quarter Finals'''
-| align="center" style="background:#f0f0f0;" colspan="2"|'''Semi Finals'''
-| align="center" style="background:#f0f0f0;" colspan="2"|'''Finals'''
+{| class="wikitable" style="display: inline-table;"
 |-
-| Group A||{G00}||{GP0}||{T00}||{TP0}||||{QPF}||||{SPF}||||{FPF}
+!GroupA
+!{GP0}
 |-
-| ||{G01}||||{T01}||||||||||||||
+|colspan="2"|{G00}
 |-
-| ||{G02}||||||||{Q00}||{QP0}||||||||
+|colspan="2"|{G01}
 |-
-| ||{G03}||||||||{Q01}||||||||||
+|colspan="2"|{G02}
 |-
-| ||||||||||||||||||||
-|-
-| Group B||{G10}||{GP1}||{T10}||{TP1}||||||||||||
-|-
-| ||{G11}||||{T11}||||||||||||||
-|-
-| ||{G12}||||||||||||{S00}||{SP0}||||
-|-
-| ||{G13}||||||||||||{S01}||||||
-|-
-| ||||||||||||||||||||
-|-
-| Group C||{G20}||{GP2}||{T20}||{TP2}||||||||||||
-|-
-| ||{G21}||||{T21}||||||||||||||
-|-
-| ||{G22}||||||||{Q10}||{QP1}||||||||
-|-
-| ||{G23}||||||||{Q11}||||||||||
-|-
-| ||||||||||||||||||||
-|-
-| Group D||{G30}||{GP3}||{T30}||{TP3}||||||||||||
-|-
-| ||{G31}||||{T31}||||||||||||||
-|-
-| ||{G32}||||||||||||||||{F00}||{FP0}
-|-
-| ||{G33}||||||||||||||||{F01}||
-|-
-| ||||||||||||||||||||
-|-
-| Group E||{G40}||{GP4}||{T40}||{TP4}||||||||||||
-|-
-| ||{G41}||||{T41}||||||||||||||
-|-
-| ||{G42}||||||||{Q20}||{QP2}||||||||
-|-
-| ||{G43}||||||||{Q21}||||||||||
-|-
-| ||||||||||||||||||||
-|-
-| Group F||{G50}||{GP5}||{T50}||{TP5}||||||||||||
-|-
-| ||{G51}||||{T51}||||||||||||||
-|-
-| ||{G52}||||||||||||{S10}||{SP1}||||
-|-
-| ||{G53}||||||||||||{S11}||||||
-|-
-| ||||||||||||||||||||
-|-
-| Group G||{G60}||{GP6}||{T60}||{TP6}||||||||||||
-|-
-| ||{G61}||||{T61}||||||||||||||
-|-
-| ||{G62}||||||||{Q30}||{QP3}||||||||
-|-
-| ||{G63}||||||||{Q31}||||||||||
-|-
-| ||||||||||||||||||||
-|-
-| Group H||{G70}||{GP7}||{T70}||{TP7}||||||||||||
-|-
-| ||{G71}||||{T71}||||||||||||||
-|-
-| ||{G72}||||||||||||||||||
-|-
-| ||{G73}||||||||||||||||||
-|-
+|colspan="2"|{G03}
 |}
+{| class="wikitable" style="display: inline-table;"
+|-
+!GroupB
+!{GP1}
+|-
+|colspan="2"|{G10}
+|-
+|colspan="2"|{G11}
+|-
+|colspan="2"|{G12}
+|-
+|colspan="2"|{G13}
+|}
+{| class="wikitable" style="display: inline-table;"
+|-
+!GroupC
+!{GP2}
+|-
+|colspan="2"|{G20}
+|-
+|colspan="2"|{G21}
+|-
+|colspan="2"|{G22}
+|-
+|colspan="2"|{G23}
+|}
+{| class="wikitable" style="display: inline-table;"
+|-
+!GroupD
+!{GP3}
+|-
+|colspan="2"|{G30}
+|-
+|colspan="2"|{G31}
+|-
+|colspan="2"|{G32}
+|-
+|colspan="2"|{G33}
+|}
+{| class="wikitable" style="display: inline-table;"
+|-
+!GroupE
+!{GP4}
+|-
+|colspan="2"|{G40}
+|-
+|colspan="2"|{G41}
+|-
+|colspan="2"|{G42}
+|-
+|colspan="2"|{G43}
+|}
+{| class="wikitable" style="display: inline-table;"
+|-
+!GroupF
+!{GP5}
+|-
+|colspan="2"|{G50}
+|-
+|colspan="2"|{G51}
+|-
+|colspan="2"|{G52}
+|-
+|colspan="2"|{G53}
+|}
+{| class="wikitable" style="display: inline-table;"
+|-
+!GroupG
+!{GP6}
+|-
+|colspan="2"|{G60}
+|-
+|colspan="2"|{G61}
+|-
+|colspan="2"|{G62}
+|-
+|colspan="2"|{G63}
+|}
+{| class="wikitable" style="display: inline-table;"
+|-
+!GroupH
+!{GP7}
+|-
+|colspan="2"|{G70}
+|-
+|colspan="2"|{G71}
+|-
+|colspan="2"|{G72}
+|-
+|colspan="2"|{G73}
+|}
+
+{{Round16|3rdplace=no
+<!-- Date-Place/Team 1/Score 1/Team 2/Score 2 -->
+<!-- round of 16 -->
+|{TP0}|{T00}|{TW00}|{T01}|{TW01}
+|{TP1}|{T10}|{TW10}|{T11}|{TW11}
+|{TP2}|{T20}|{TW20}|{T21}|{TW21}
+|{TP3}|{T30}|{TW30}|{T31}|{TW31}
+|{TP4}|{T40}|{TW40}|{T41}|{TW41}
+|{TP5}|{T50}|{TW50}|{T51}|{TW51}
+|{TP6}|{T60}|{TW60}|{T61}|{TW61}
+|{TP7}|{T70}|{TW70}|{T71}|{TW71}
+<!-- quarter finals -->
+|{QP0}|{Q00}|{QW00}|{Q01}|{QW01}
+|{QP1}|{Q10}|{QW10}|{Q11}|{QW11}
+|{QP2}|{Q20}|{QW20}|{Q21}|{QW21}
+|{QP3}|{Q30}|{QW30}|{Q31}|{QW31}
+<!-- semi finals -->
+|{SP0}|{S00}|{SW00}|{S01}|{SW01}
+|{SP1}|{S10}|{SW10}|{S11}|{SW11}
+<!-- final -->
+|{FP0}|{F00}|{FW00}|{F11}|{FW11}
+}}

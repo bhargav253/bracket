@@ -29,15 +29,24 @@ def group_chk(dat,x):
     return score
         
 
-def replace_line(pat,text,lines,color):
-    if color:
-        text = 'style="color:green"|' + text
-
+def replace_line(pat,text,lines,wpat,win):
     for l in range(len(lines)):
         m = re.sub(pat,text,lines[l])
         if m:
             lines[l] = m
 
+        if wpat:
+            if win:
+                m = re.sub(wpat,'W',lines[l])
+                if m:
+                    lines[l] = m                    
+            else:
+                m = re.sub(wpat,'',lines[l])            
+                if m:
+                    lines[l] = m                    
+
+
+            
 def xtract_sheet(sheet):
     g = []
     t = []
@@ -119,7 +128,8 @@ def xtract_sheet(sheet):
 
 def load_lines(sheet):
     temp_file = open('template','r')
-    ls = temp_file.readlines()
+    ls = temp_file.read()
+    ls = ls.splitlines()
     lines = []
     for l in ls:
         m = re.sub('{Name}',sheet,l)
@@ -137,43 +147,48 @@ def make_table(lines,dat):
     for x in range(8):
         for y in range(4):            
             pat = '{G' + str(x) + str(y) + '}'
-            replace_line(pat,dat['GRP'][x][y],lines,False)
+            replace_line(pat,dat['GRP'][x][y],lines,None,None)
             
     #teens
     for x in range(8):
         for y in range(2):
             pat = '{T' + str(x) + str(y) + '}'
+            wpat = '{TW' + str(x) + str(y) + '}'            
             if dat['STN'][x][y] == dat['QFS'][x/2][x%2]:
-                color = True
+                win = True
             else:
-                color = False                
-            replace_line(pat,dat['STN'][x][y],lines,color)
+                win = False                
+            replace_line(pat,dat['STN'][x][y],lines,wpat,win)
         
     #QFs
     for x in range(4):
         for y in range(2):
             pat = '{Q' + str(x) + str(y) + '}'
+            wpat = '{QW' + str(x) + str(y) + '}'            
             if dat['QFS'][x][y] == dat['SFS'][x/2][x%2]:
-                color = True
+                win = True
             else:
-                color = False                
-            replace_line(pat,dat['QFS'][x][y],lines,color)
+                win = False                
+            replace_line(pat,dat['QFS'][x][y],lines,wpat,win)
 
     #SFs
     for x in range(2):
         for y in range(2):
             pat = '{S' + str(x) + str(y) + '}'
+            wpat = '{SW' + str(x) + str(y) + '}'            
             if dat['SFS'][x][y] == dat['F'][x]:
-                color = True
+                win = True
             else:
-                color = False
-            replace_line(pat,dat['SFS'][x][y],lines,color)
+                win = False
+            replace_line(pat,dat['SFS'][x][y],lines,wpat,win)
         
     #Fs
-    pat = '{F00}'
-    replace_line(pat,dat['F'][0],lines,(dat['F'][0]==dat['W'])) 
-    pat = '{F01}'   
-    replace_line(pat,dat['F'][1],lines,(dat['F'][1]==dat['W']))
+    pat  = '{F00}'
+    wpat = '{FW00}'    
+    replace_line(pat,dat['F'][0],lines,wpat,(dat['F'][0]==dat['W'])) 
+    pat  = '{F11}'
+    wpat = '{FW11}'       
+    replace_line(pat,dat['F'][1],lines,wpat,(dat['F'][1]==dat['W']))
 
 
 def evaluate_score(lines,dat):
@@ -183,7 +198,7 @@ def evaluate_score(lines,dat):
     for x in range(8):
         score = group_chk(dat['GRP'],x)
         pat = '{GP' + str(x) + '}'
-        replace_line(pat,str(score),lines,False)
+        replace_line(pat,str(score),lines,None,None)
         tot_score = tot_score + score
 
     #teens brackets
@@ -196,7 +211,7 @@ def evaluate_score(lines,dat):
             score = 0
 
         pat = '{TP' + str(x) + '}'
-        replace_line(pat,str(score),lines,False)
+        replace_line(pat,str(score),lines,None,None)
         tot_score = tot_score + score        
 
     #QFs
@@ -216,12 +231,12 @@ def evaluate_score(lines,dat):
             score = 0
 
         pat = '{QP' + str(x) + '}'
-        replace_line(pat,str(score),lines,False)
+        replace_line(pat,str(score),lines,None,None)
         tot_score = tot_score + score        
 
     score = 3 * len(list(set(c_list).intersection(w_list)))
     pat = '{QPF}'
-    replace_line(pat,str(score),lines,False)
+    replace_line(pat,str(score),lines,None,None)
     tot_score = tot_score + score    
         
         
@@ -242,12 +257,12 @@ def evaluate_score(lines,dat):
             score = 0
 
         pat = '{SP' + str(x) + '}'
-        replace_line(pat,str(score),lines,False)
+        replace_line(pat,str(score),lines,None,None)
         tot_score = tot_score + score        
 
     score = 4 * len(list(set(c_list).intersection(w_list)))
     pat = '{SPF}'
-    replace_line(pat,str(score),lines,False)
+    replace_line(pat,str(score),lines,None,None)
     tot_score = tot_score + score    
         
 
@@ -260,7 +275,7 @@ def evaluate_score(lines,dat):
         score = 0
 
     pat = '{FP0}'
-    replace_line(pat,str(score),lines,False)
+    replace_line(pat,str(score),lines,None,None)
     tot_score = tot_score + score    
     
     score = 5 * len(list(set(dat['F']).intersection(winner['F'])))
@@ -270,7 +285,7 @@ def evaluate_score(lines,dat):
         score = score + 8
     
     pat = '{FPF}'
-    replace_line(pat,str(score),lines,False)
+    replace_line(pat,str(score),lines,None,None)
     tot_score = tot_score + score    
 
     return tot_score
@@ -280,12 +295,8 @@ def print_header():
     print '__NOTOC__\n'\
         '===Bracket Challenge===\n'\
         'Welcome to Cavium’s World Cup Bracket Challenge!\n'\
-        '<br>We have 24 people who signed up with the fee, so the prizes are going to be:\n'\
-        '*1st place: $120\n'\
-        '*2nd place: $60\n'\
-        '*3rd place: $40\n'\
-        '*last place: $20\n\n'\
         'Good Luck with your brackets and Enjoy World Cup!!! J\n\n'\
+        '[[File:Bracket.xlsx]]'\
         '===Scoring===\n'\
         'Group Stage Scoring\n'\
         '*Correctly predict a Group winner: 10 points\n'\
