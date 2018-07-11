@@ -215,14 +215,7 @@ def evaluate_score(lines,dat):
         tot_score = tot_score + score        
 
     #QFs
-    c_list = []
-    w_list = []
     for x in range(4):
-        c_list.append(dat['QFS'][x][0])
-        c_list.append(dat['QFS'][x][1])        
-        w_list.append(winner['QFS'][x][0])
-        w_list.append(winner['QFS'][x][1])        
-
         brack = (dat['QFS'][x][0] == winner['QFS'][x][0]) & \
                 (dat['QFS'][x][1] == winner['QFS'][x][1])
         if brack:
@@ -230,24 +223,18 @@ def evaluate_score(lines,dat):
         else:
             score = 0
 
+        for ele in winner['QFS']:
+            if (dat['QFS'][x][0] in ele):
+                score = score + 3
+            if(dat['QFS'][x][1] in ele):
+                score = score + 3                        
+            
         pat = '{QP' + str(x) + '}'
         replace_line(pat,str(score),lines,None,None)
         tot_score = tot_score + score        
-
-    score = 3 * len(list(set(c_list).intersection(w_list)))
-    pat = '{QPF}'
-    replace_line(pat,str(score),lines,None,None)
-    tot_score = tot_score + score    
-        
         
     #SFs
-    c_list = []
-    w_list = []
     for x in range(2):
-        c_list.append(dat['SFS'][x][0])
-        c_list.append(dat['SFS'][x][1])        
-        w_list.append(winner['SFS'][x][0])
-        w_list.append(winner['SFS'][x][1])        
 
         brack = (dat['SFS'][x][0] == winner['SFS'][x][0]) & \
                 (dat['SFS'][x][1] == winner['SFS'][x][1])
@@ -256,14 +243,15 @@ def evaluate_score(lines,dat):
         else:
             score = 0
 
+        for ele in winner['SFS']:
+            if (dat['SFS'][x][0] in ele):
+                score = score + 4
+            if(dat['SFS'][x][1] in ele):
+                score = score + 4                
+            
         pat = '{SP' + str(x) + '}'
         replace_line(pat,str(score),lines,None,None)
         tot_score = tot_score + score        
-
-    score = 4 * len(list(set(c_list).intersection(w_list)))
-    pat = '{SPF}'
-    replace_line(pat,str(score),lines,None,None)
-    tot_score = tot_score + score    
         
 
     #final bracket
@@ -274,17 +262,13 @@ def evaluate_score(lines,dat):
     else:
         score = 0
 
-    pat = '{FP0}'
-    replace_line(pat,str(score),lines,None,None)
-    tot_score = tot_score + score    
-    
     score = 5 * len(list(set(dat['F']).intersection(winner['F'])))
     if dat['W'] == winner['W']:
         score = score + 10
     elif dat['R'] == winner['R']:
         score = score + 8
     
-    pat = '{FPF}'
+    pat = '{FP0}'
     replace_line(pat,str(score),lines,None,None)
     tot_score = tot_score + score    
 
